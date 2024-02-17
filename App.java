@@ -21,7 +21,7 @@ public class App extends JFrame {
      * Constructor to initialize the application.
      */
     public App() {
-        super("Simple Paint Application");
+        super("Simple Music Notation Editor");
         initUI();
         initDrawing();
     }
