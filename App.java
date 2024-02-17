@@ -136,7 +136,7 @@ public class App extends JFrame {
      * Shows an About dialog with information about the application.
      */
     private void showAbout() {
-        JOptionPane.showMessageDialog(this, "Simple Paint Application\nVersion 1.0\nCreated by ChatGPT", "About", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Simple Music Notation Editor\nVersion 1.0\nCreated by ChatGPT", "About", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
