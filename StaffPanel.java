@@ -34,13 +34,13 @@ public class StaffPanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
-        int staffHeight = getHeight() / 2;
-        int staffWidth = getWidth();
+        int staffHeight = 1200 / 2;
+        int staffWidth = 800;
         int lineSpacing = staffHeight / 10; // Adjust line spacing as needed
         int startX = 50; // Adjust start X position as needed
 
         // Draw treble clef
-        Font font = new Font("SansSerif", Font.PLAIN, getHeight()/4); // Font for clef symbol
+        Font font = new Font("SansSerif", Font.PLAIN, 1200/4); // Font for clef symbol
         g2d.setFont(font);
         FontMetrics fm = g2d.getFontMetrics();
         int textWidth = fm.stringWidth("\uD834\uDD1E"); // Width of the clef symbol
@@ -85,8 +85,8 @@ public class StaffPanel extends JPanel {
             int x = e.getX(); // Get the x-coordinate of the mouse click
             int y = e.getY(); // Get the y-coordinate of the mouse click
             
-            int staffHeight = getHeight() /2;
-            int lineSpacing = staffHeight / 10; // Adjust line spacing as needed for 4 lines
+            int staffHeight = 600;
+            int lineSpacing = 60; // Adjust line spacing as needed for 4 lines
     
             Map.Entry<Integer, Integer> low = treeMap.floorEntry(y);
             Map.Entry<Integer, Integer> high = treeMap.floorEntry(y);

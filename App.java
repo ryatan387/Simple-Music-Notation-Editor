@@ -29,11 +29,12 @@ public class App extends JFrame {
      * Initializes the User Interface components of the application.
      */
     private void initUI() {
-        setSize(800, 600);
+        setSize(1200, 800);
         setLayout(new BorderLayout());
         setupMenuBar();
         setUpToolBar();
         //pack();
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
     }
