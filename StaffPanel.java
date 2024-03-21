@@ -48,7 +48,7 @@ public class StaffPanel extends JPanel {
         g2d.setFont(font);
         FontMetrics fm = g2d.getFontMetrics();
         g2d.drawString("\uD834\uDD1E", startX, fm.getAscent() + (lineSpacing ) ); // Unicode for treble clef
-        // (staffHeight - textHeight) / 2 + fm.getAscent()
+
         // Draw treble staff lines
         int treblePosition = 0;
         for (int i = 0; i < 5; i++) {

@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class App extends JFrame {
     private JToolBar toolBar;
-    private JButton playButton, stopButton, quarterNoteButton, halfNoteButton, wholeNoteButton;
+    private JButton playButton, quarterNoteButton, halfNoteButton, wholeNoteButton;
     private GrandStaffPanel grandStaffPanel;
 
     /**
@@ -107,14 +107,13 @@ public class App extends JFrame {
     public void setUpToolBar(){
         toolBar = new JToolBar();
         playButton = new JButton("Play");
-        stopButton = new JButton("Stop");
         wholeNoteButton = new JButton("\uD834\uDD5D"); // Whole note Unicode
         halfNoteButton = new JButton("\uD834\uDD5E"); // Half note Unicode
         quarterNoteButton = new JButton("\u2669"); // Quarter note Unicode
         JSlider bpmSlider = new JSlider(JSlider.HORIZONTAL, 40, 240, 120);
         bpmSlider.setMajorTickSpacing(20);
         bpmSlider.setPaintTicks(true);
-        
+
         toolBar.add(playButton);
         toolBar.add(wholeNoteButton);
         toolBar.add(halfNoteButton);

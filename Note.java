@@ -22,11 +22,6 @@ public class Note {
 
     public void draw(Graphics g) {
         // Draw the note at the specified position
-        /* 
-        Font font = new Font("SansSerif", Font.PLAIN, size*2);
-        g.setFont(font);
-        g.drawString("\u2669", x , y+(size/4)); // Quarter note Unicode character
-        */
         if(duration == 4){
             drawQuarterNote(g);
         }else if(duration == 8){
