@@ -29,10 +29,18 @@ public class Note {
         g.drawString("\u2669", x , y+(size/4)); // Quarter note Unicode character
         */
         if(isStemUp){
-            g.fillOval(x, y - size / 2 , size, size);
+            if(pitch == 60){
+                g.fillOval(x, y - size / 2 , size, size);
 
-            // Draw the stem
-            g.drawLine(x + size, y , x + size, (int)(y - size * 3.5));
+                // Draw the stem
+                g.drawLine(x + size, y , x + size, (int)(y - size * 3.5));
+                g.drawLine(x - size/2, y - size/6, x + 2 * size , y - size/6);
+            }else{
+                g.fillOval(x, y - size / 2 , size, size);
+
+                // Draw the stem
+                g.drawLine(x + size, y , x + size, (int)(y - size * 3.5));
+            }
         }else{
             g.fillOval(x, y - size / 2 , size, size);
 

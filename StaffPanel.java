@@ -17,16 +17,26 @@ public class StaffPanel extends JPanel {
     private List<Note> notes;
     private Note selectedNote;
     private int offsetX, offsetY;
-    private TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+    private TreeMap<Integer, Integer> validYPosition = new TreeMap<>();
 
     private static Integer[] trebleClefPitches = {78, 76, 74, 72, 71, 69, 67, 65, 64, 62, 60};
-    private static Integer[] bassClefPitches = {57, 55, 53, 52, 50, 48, 47, 45, 43, 41, 40};
+    private static Integer[] bassClefPitches = {59, 57, 55, 53, 52, 50, 48, 47, 45, 43, 41, 40};
+    List<TreeMap<Integer, Integer>> measures = new ArrayList<>();
+    List<TreeMap<Integer, Note>> placedNotesTreble = new ArrayList<>();
+    List<TreeMap<Integer, Note>> placedNotesBass = new ArrayList<>();
 
     public StaffPanel() {
         //this.staffType = staffType;
         notes = new ArrayList<>();
+        for(int i = 0 ; i < 4; i++){
+            TreeMap<Integer, Integer> measure = new TreeMap<>();
+            measures.add(measure);
+            TreeMap<Integer, Note> trebleNotes = new TreeMap<>();
+            TreeMap<Integer, Note> bassNotes = new TreeMap<>();
+            placedNotesTreble.add(trebleNotes);
+            placedNotesBass.add(bassNotes);
+        }
         addMouseListener(new NoteMouseListener());
-        addMouseMotionListener(new NoteMouseMotionListener());
     }
 
     @Override
@@ -52,9 +62,11 @@ public class StaffPanel extends JPanel {
         for (int i = 0; i < 5; i++) {
             int currentY = lineSpacing * i + (staffHeight - lineSpacing * 5) / 2;
             g2d.drawLine(startX, currentY, staffWidth - startX, currentY);
-            treeMap.put(currentY, trebleClefPitches[treblePosition++]);
-            treeMap.put(currentY + (lineSpacing / 2), trebleClefPitches[treblePosition++]);
+            validYPosition.put(currentY, trebleClefPitches[treblePosition++]);
+            validYPosition.put(currentY + (lineSpacing / 2), trebleClefPitches[treblePosition++]);
         }
+        // Middle C
+        validYPosition.put(lineSpacing * 5 + (staffHeight - lineSpacing * 5) / 2, trebleClefPitches[treblePosition]);
         // Draw bass clef
         g2d.setFont(font);
         int staffGap = lineSpacing * 8 + (staffHeight - lineSpacing * 5) / 2;
@@ -65,12 +77,20 @@ public class StaffPanel extends JPanel {
         for (int i = 0; i < 5; i++) {
             int currentY = lineSpacing * i + (staffHeight - lineSpacing * 5) / 2 + staffGap;
             g2d.drawLine(startX, currentY, staffWidth - startX, currentY);
-            treeMap.put(currentY, bassClefPitches[bassPosition++]);
-            treeMap.put(currentY + (lineSpacing / 2), bassClefPitches[bassPosition++]);
+            validYPosition.put(currentY - (lineSpacing / 2), bassClefPitches[bassPosition++]);
+            validYPosition.put(currentY, bassClefPitches[bassPosition++]);
         }
+        validYPosition.put(lineSpacing * 5 + (staffHeight - lineSpacing * 5) / 2 + staffGap + (lineSpacing / 2), bassClefPitches[bassPosition++]);
         // Draw measure bar lines
         for (int i = 0; i < 5; i++) { // Draw 4 measures
-            g2d.drawLine(startX + i * (staffWidth - startX * 2) / 4, (staffHeight - lineSpacing * 5) / 2, startX + i * (staffWidth - startX * 2) / 4, lineSpacing * 4 + (staffHeight - lineSpacing * 5) / 2 + staffGap);
+            int yPosition = (staffHeight - lineSpacing * 5) / 2;
+            g2d.drawLine(startX + i * (staffWidth - startX * 2) / 4, yPosition, startX + i * (staffWidth - startX * 2) / 4, lineSpacing * 4 + yPosition + staffGap);
+            if(i<4){
+                int xPosition = ((startX + 2 * (staffWidth - startX * 2) / 4) - (startX + (staffWidth - startX * 2) / 4)) / 5;
+                for(int j = 1; j < 5; j++){
+                    measures.get(i).put(startX + i * (staffWidth - startX * 2) / 4 + j * xPosition, 0);
+                }
+            }
         }
 
         // Draw notes
@@ -87,57 +107,92 @@ public class StaffPanel extends JPanel {
             
             int staffHeight = getHeight() / 2;
             int lineSpacing = staffHeight / 10; // Adjust line spacing as needed for 4 lines
-    
-            Map.Entry<Integer, Integer> low = treeMap.floorEntry(y);
-            Map.Entry<Integer, Integer> high = treeMap.floorEntry(y);
 
+            if(x > 50 && x < 50 + 4 * (getWidth() - 50 * 2) / 4){
+                System.out.println("in measure");
+            }else{
+                return;
+            }
+
+            int index = 3;
+            if(x < 50 + 1 * (getWidth() - 50 * 2) / 4){
+                index = 0;
+            }else if(x < 50 + 2 * (getWidth() - 50 * 2) / 4){
+                index = 1;
+            }else if(x < 50 + 3 * (getWidth() - 50 * 2) / 4){
+                index = 2;
+            }else{
+                index = 3;
+            }
+            Map.Entry<Integer, Integer> lowX = measures.get(index).floorEntry(x);
+            Map.Entry<Integer, Integer> highX = measures.get(index).ceilingEntry(x);
+
+            Map.Entry<Integer, Integer> lowY = validYPosition.floorEntry(y);
+            Map.Entry<Integer, Integer> highY = validYPosition.ceilingEntry(y);
+
+            int xPosition = 0;
             int yPosition = 0;
             int pitch = 0;
-            if (low != null && high != null){
-                yPosition = Math.abs(y-low.getKey()) < Math.abs(y-high.getKey())
-                ? low.getKey()
-                : high.getKey();
-                pitch = Math.abs(y-low.getKey()) < Math.abs(y-high.getKey())
-                ? low.getValue()
-                : high.getValue();
-            } else if (low != null || high != null){
-                yPosition = low != null ? low.getKey() : high.getKey();
-                pitch = low != null ? low.getValue() : high.getValue();
+
+            if (lowX != null && highX != null){
+                xPosition = Math.abs(x-lowX.getKey()) < Math.abs(x-highX.getKey())
+                ? lowX.getKey()
+                : highX.getKey();
+            } else if (lowX != null || highX != null){
+                xPosition = lowX != null ? lowX.getKey() : highX.getKey();
+            }
+
+            if (lowY != null && highY != null){
+                yPosition = Math.abs(y-lowY.getKey()) < Math.abs(y-highY.getKey())
+                ? lowY.getKey()
+                : highY.getKey();
+                pitch = Math.abs(y-lowY.getKey()) < Math.abs(y-highY.getKey())
+                ? lowY.getValue()
+                : highY.getValue();
+            } else if (lowY != null || highY != null){
+                yPosition = lowY != null ? lowY.getKey() : highY.getKey();
+                pitch = lowY != null ? lowY.getValue() : highY.getValue();
             }
             // Create a new note and add it to the notes list
+
             Note note;
             int staffGap = lineSpacing * 8 + (staffHeight - lineSpacing * 5) / 2;
+            
             if(yPosition <= lineSpacing * 2 + (staffHeight - lineSpacing * 5) / 2){
-                note = new Note(x, yPosition, pitch, lineSpacing, false);
+                note = new Note(xPosition, yPosition, pitch, lineSpacing, false);
             }else if(yPosition <= staffGap){
-                note = new Note(x, yPosition, pitch, lineSpacing, true);
+                note = new Note(xPosition, yPosition, pitch, lineSpacing, true);
             }else if(yPosition <= lineSpacing * 2 + (staffHeight - lineSpacing * 5) / 2 + staffGap){
-                note = new Note(x, yPosition, pitch, lineSpacing, false);
+                note = new Note(xPosition, yPosition, pitch, lineSpacing, false);
             }else{
-                note = new Note(x, yPosition, pitch, lineSpacing, true);
+                note = new Note(xPosition, yPosition, pitch, lineSpacing, true);
             }
-            //System.out.println(pitch);
+            System.out.println(pitch);
             System.out.println(yPosition);
-            notes.add(note);
-    
+            if(yPosition < (staffHeight - lineSpacing * 5) / 2 + staffGap - (lineSpacing / 2)){
+                if(placedNotesTreble.get(index).get(xPosition) != null){
+                    notes.remove(placedNotesTreble.get(index).get(xPosition));
+                    placedNotesTreble.get(index).remove(xPosition);
+                    System.out.println("remove");
+                }else{
+                    placedNotesTreble.get(index).put(xPosition, note);
+                    notes.add(note);
+                }
+                System.out.println("treble");
+            }else{
+                if(placedNotesBass.get(index).get(xPosition) != null){
+                    notes.remove(placedNotesBass.get(index).get(xPosition));
+                    placedNotesBass.get(index).remove(xPosition);
+                    System.out.println("remove");
+                }else{
+                    placedNotesBass.get(index).put(xPosition, note);
+                    notes.add(note);
+                }
+                System.out.println("bass");
+            }
             // Repaint the panel to reflect the newly added note
             repaint();
 
-        }
-    }
-
-    private class NoteMouseMotionListener extends MouseMotionAdapter {
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            if (selectedNote != null) {
-                int x = e.getX(); // Get the x-coordinate of the mouse drag
-                int y = e.getY(); // Get the y-coordinate of the mouse drag
-
-                // Update the position of the selected note
-                selectedNote.setX(x - offsetX);
-                selectedNote.setY(y - offsetY);
-                repaint();
-            }
         }
     }
 
