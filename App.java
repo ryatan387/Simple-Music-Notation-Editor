@@ -29,7 +29,31 @@ public class App extends JFrame {
      * Initializes the User Interface components of the application.
      */
     private void initUI() {
-        setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        // Get the graphics environment
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gdArray = ge.getScreenDevices();
+
+        // Get the maximum width and height of the monitor
+        int maxWidth = 0;
+        int maxHeight = 0;
+        for (GraphicsDevice gd : gdArray) {
+            DisplayMode dm = gd.getDisplayMode();
+            int width = dm.getWidth();
+            int height = dm.getHeight();
+            if (width > maxWidth) {
+                maxWidth = width;
+            }
+            if (height > maxHeight) {
+                maxHeight = height;
+            }
+        }
+
+        // Calculate the window size
+        int windowWidth = maxWidth - 150; // Subtract 150 pixels from the maximum width
+        int windowHeight = maxHeight - 150; // Subtract 150 pixels from the maximum height
+
+        // Set the window size
+        setSize(windowWidth, windowHeight);
         setLayout(new BorderLayout());
         setupMenuBar();
         setUpToolBar();
