@@ -79,7 +79,7 @@ public class StaffPanel extends JPanel {
             g2d.drawLine(startX + i * (staffWidth - startX * 2) / 4, yPosition, startX + i * (staffWidth - startX * 2) / 4, lineSpacing * 4 + yPosition + staffGap);
             if(i<4){
                 int xPosition = ((startX + 2 * (staffWidth - startX * 2) / 4) - (startX + (staffWidth - startX * 2) / 4)) / 5;
-                int tick = 0 + (16 * i);
+                int tick = 4 + (16 * i);
                 for(int j = 1; j < 5; j++){
                     measures.get(i).put(startX + i * (staffWidth - startX * 2) / 4 + j * xPosition, tick);
                     tick += 4;
