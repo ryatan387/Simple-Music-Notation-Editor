@@ -59,7 +59,7 @@ public class StaffPanel extends JPanel {
         // Draw bass clef
         g2d.setFont(font);
         int staffGap = lineSpacing * 8 + (staffHeight - lineSpacing * 5) / 2;
-        g2d.drawString("\uD834\uDD22", startX, fm.getAscent() + lineSpacing +staffGap ); // Unicode for bass clef
+        g2d.drawString("\uD834\uDD22", startX, fm.getAscent() + lineSpacing + staffGap ); // Unicode for bass clef
 
         // Draw bass staff lines
         int bassPosition = 0;
@@ -107,7 +107,12 @@ public class StaffPanel extends JPanel {
             }
             // Create a new note and add it to the notes list
             Note note;
+            int staffGap = lineSpacing * 8 + (staffHeight - lineSpacing * 5) / 2;
             if(yPosition <= lineSpacing * 2 + (staffHeight - lineSpacing * 5) / 2){
+                note = new Note(x, yPosition, pitch, lineSpacing, false);
+            }else if(yPosition <= staffGap){
+                note = new Note(x, yPosition, pitch, lineSpacing, true);
+            }else if(yPosition <= lineSpacing * 2 + (staffHeight - lineSpacing * 5) / 2 + staffGap){
                 note = new Note(x, yPosition, pitch, lineSpacing, false);
             }else{
                 note = new Note(x, yPosition, pitch, lineSpacing, true);
