@@ -30,11 +30,11 @@ public class MusicPlayer {
             
             // Get a sequencer
             sequencer = MidiSystem.getSequencer();
+            sequencer.setTempoFactor(bpmFactor);
             sequencer.open();
             
             // Set the sequence for the sequencer
             sequencer.setSequence(sequence);
-            sequencer.setTempoFactor(bpmFactor);
             
             // Start playback
             sequencer.start();
