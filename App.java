@@ -119,7 +119,14 @@ public class App extends JFrame {
         toolBar.add(wholeNoteButton);
         toolBar.add(halfNoteButton);
         toolBar.add(quarterNoteButton);
-        toolBar.add(bpmSlider);
+        toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
+        
+        // Add a panel for the BPM slider with BorderLayout
+        JPanel bpmPanel = new JPanel(new BorderLayout());
+        bpmPanel.add(bpmSlider, BorderLayout.CENTER);
+        
+        // Add the BPM panel to the toolbar
+        toolBar.add(bpmPanel);
         add(toolBar, BorderLayout.NORTH);
 
         // Grand Staff Panel
