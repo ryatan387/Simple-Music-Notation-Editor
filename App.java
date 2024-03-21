@@ -1,9 +1,9 @@
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import java.awt.*;
 import java.awt.event.*;
-import javax.sound.midi.*;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class App extends JFrame {
     private JToolBar toolBar;
-    private JButton playButton, quarterNoteButton, halfNoteButton, wholeNoteButton;
+    private JButton playButton, stopButton, quarterNoteButton, halfNoteButton, wholeNoteButton;
     private GrandStaffPanel grandStaffPanel;
 
     /**
@@ -107,14 +107,19 @@ public class App extends JFrame {
     public void setUpToolBar(){
         toolBar = new JToolBar();
         playButton = new JButton("Play");
+        stopButton = new JButton("Stop");
+        wholeNoteButton = new JButton("\uD834\uDD5D"); // Whole note Unicode
+        halfNoteButton = new JButton("\uD834\uDD5E"); // Half note Unicode
         quarterNoteButton = new JButton("\u2669"); // Quarter note Unicode
-        halfNoteButton = new JButton("\u266A"); // Half note Unicode
-        wholeNoteButton = new JButton("\u266B"); // Whole note Unicode
-
+        JSlider bpmSlider = new JSlider(JSlider.HORIZONTAL, 40, 240, 120);
+        bpmSlider.setMajorTickSpacing(20);
+        bpmSlider.setPaintTicks(true);
+        
         toolBar.add(playButton);
-        toolBar.add(quarterNoteButton);
-        toolBar.add(halfNoteButton);
         toolBar.add(wholeNoteButton);
+        toolBar.add(halfNoteButton);
+        toolBar.add(quarterNoteButton);
+        toolBar.add(bpmSlider);
         add(toolBar, BorderLayout.NORTH);
 
         // Grand Staff Panel
@@ -127,6 +132,43 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MusicPlayer.playMusic(grandStaffPanel);
+            }
+        });
+
+        wholeNoteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<StaffPanel> tempStaffPanels = grandStaffPanel.getStaffPanels();
+                for(StaffPanel sPanel : tempStaffPanels){
+                    sPanel.setNoteType(16);
+                }
+            }
+        });
+
+        halfNoteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<StaffPanel> tempStaffPanels = grandStaffPanel.getStaffPanels();
+                for(StaffPanel sPanel : tempStaffPanels){
+                    sPanel.setNoteType(8);
+                }
+            }
+        });
+
+        quarterNoteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<StaffPanel> tempStaffPanels = grandStaffPanel.getStaffPanels();
+                for(StaffPanel sPanel : tempStaffPanels){
+                    sPanel.setNoteType(4);
+                }
+            }
+        });
+
+        bpmSlider.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                float bpm = bpmSlider.getValue();
+                MusicPlayer.setBPM(bpm);
             }
         });
 

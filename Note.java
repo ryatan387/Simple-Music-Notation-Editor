@@ -1,9 +1,4 @@
-import javax.swing.*;
-
-import org.w3c.dom.css.Rect;
-
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Note {
     private int x;
@@ -11,12 +6,16 @@ public class Note {
     private int pitch;
     private int size;
     private boolean isStemUp;
+    private int duration;
+    private int tick;
     private static final int NOTE_SIZE = 10; // Adjust note size as needed
 
-    public Note(int x, int y, int pitch, int size, boolean isStemUp) {
+    public Note(int x, int y, int pitch, int tick, int duration, int size, boolean isStemUp) {
         this.x = x;
         this.y = y;
         this.pitch = pitch;
+        this.tick = tick;
+        this.duration = duration;
         this.size = size;
         this.isStemUp = isStemUp;
     }
@@ -28,24 +27,56 @@ public class Note {
         g.setFont(font);
         g.drawString("\u2669", x , y+(size/4)); // Quarter note Unicode character
         */
+        if(duration == 4){
+            drawQuarterNote(g);
+        }else if(duration == 8){
+            drawHalfNote(g);
+        }else{
+            drawWholeNote(g);
+        }
+        if(pitch == 60){
+            g.drawLine(x - size/2, y - size/6, x + 2 * size , y - size/6);
+        }
+    }
+
+    private void drawWholeNote(Graphics g){
+        g.fillOval(x, y - size / 2 , size, size);
+        g.setColor(Color.WHITE);
+        g.fillOval(x + size/3, (y - size / 2) + size/3, size/2, size/2);
+        g.setColor(Color.BLACK);
+    }
+
+    private void drawHalfNote(Graphics g){
         if(isStemUp){
-            if(pitch == 60){
-                g.fillOval(x, y - size / 2 , size, size);
-
-                // Draw the stem
-                g.drawLine(x + size, y , x + size, (int)(y - size * 3.5));
-                g.drawLine(x - size/2, y - size/6, x + 2 * size , y - size/6);
-            }else{
-                g.fillOval(x, y - size / 2 , size, size);
-
-                // Draw the stem
-                g.drawLine(x + size, y , x + size, (int)(y - size * 3.5));
-            }
+            g.fillOval(x, y - size / 2 , size, size);
+            g.setColor(Color.WHITE);
+            g.fillOval(x + size/3, (y - size / 2) + size/3, size/2, size/2);
+            g.setColor(Color.BLACK);
+        
+            // Draw the stem
+            g.drawLine(x + size, y , x + size, (int)(y - size * 3.5));
         }else{
             g.fillOval(x, y - size / 2 , size, size);
-
+            g.setColor(Color.WHITE);
+            g.fillOval(x + size/3, (y - size / 2) + size/3, size/2, size/2);
+            g.setColor(Color.BLACK);
+        
             // Draw the stem
-            g.drawLine(x, y, x, (int)(y + size * 3.5));
+            g.drawLine(x, y , x, (int)(y + size * 3.5));
+        }
+    }
+
+    private void drawQuarterNote(Graphics g){
+        if(isStemUp){
+            g.fillOval(x, y - size / 2 , size, size);
+        
+            // Draw the stem
+            g.drawLine(x + size, y , x + size, (int)(y - size * 3.5));
+        }else{
+            g.fillOval(x, y - size / 2 , size, size);
+        
+            // Draw the stem
+            g.drawLine(x, y , x , (int)(y + size * 3.5));
         }
     }
 
@@ -75,6 +106,10 @@ public class Note {
     }
 
     public int getDuration(){
-        return 0;
+        return duration;
+    }
+
+    public int getTick(){
+        return tick;
     }
 }

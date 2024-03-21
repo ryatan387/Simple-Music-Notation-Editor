@@ -7,21 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/* 
-enum StaffType {
-    TREBLE, BASS
-}*/
-
 public class StaffPanel extends JPanel {
     //private StaffType staffType;
     private List<Note> notes;
-    private Note selectedNote;
-    private int offsetX, offsetY;
+    private int noteType = 4; // 4 for quarter note, 8 for half note, 16 for whole note. number represents the duration of tick.
     private TreeMap<Integer, Integer> validYPosition = new TreeMap<>();
 
-    private static Integer[] trebleClefPitches = {78, 76, 74, 72, 71, 69, 67, 65, 64, 62, 60};
+    private static Integer[] trebleClefPitches = {77, 76, 74, 72, 71, 69, 67, 65, 64, 62, 60};
     private static Integer[] bassClefPitches = {59, 57, 55, 53, 52, 50, 48, 47, 45, 43, 41, 40};
-    List<TreeMap<Integer, Integer>> measures = new ArrayList<>();
+    List<TreeMap<Integer, Integer>> measures = new ArrayList<>(); // stores valid x positions and corresponding tick.
     List<TreeMap<Integer, Note>> placedNotesTreble = new ArrayList<>();
     List<TreeMap<Integer, Note>> placedNotesBass = new ArrayList<>();
 
@@ -53,8 +47,6 @@ public class StaffPanel extends JPanel {
         Font font = new Font("SansSerif", Font.PLAIN, getHeight()/4); // Font for clef symbol
         g2d.setFont(font);
         FontMetrics fm = g2d.getFontMetrics();
-        int textWidth = fm.stringWidth("\uD834\uDD1E"); // Width of the clef symbol
-        int textHeight = fm.getAscent(); // Height of the clef symbol
         g2d.drawString("\uD834\uDD1E", startX, fm.getAscent() + (lineSpacing ) ); // Unicode for treble clef
         // (staffHeight - textHeight) / 2 + fm.getAscent()
         // Draw treble staff lines
@@ -80,15 +72,17 @@ public class StaffPanel extends JPanel {
             validYPosition.put(currentY - (lineSpacing / 2), bassClefPitches[bassPosition++]);
             validYPosition.put(currentY, bassClefPitches[bassPosition++]);
         }
-        validYPosition.put(lineSpacing * 5 + (staffHeight - lineSpacing * 5) / 2 + staffGap + (lineSpacing / 2), bassClefPitches[bassPosition++]);
+        validYPosition.put(lineSpacing * 5 + (staffHeight - lineSpacing * 5) / 2 + staffGap - (lineSpacing / 2), bassClefPitches[bassPosition++]);
         // Draw measure bar lines
         for (int i = 0; i < 5; i++) { // Draw 4 measures
             int yPosition = (staffHeight - lineSpacing * 5) / 2;
             g2d.drawLine(startX + i * (staffWidth - startX * 2) / 4, yPosition, startX + i * (staffWidth - startX * 2) / 4, lineSpacing * 4 + yPosition + staffGap);
             if(i<4){
                 int xPosition = ((startX + 2 * (staffWidth - startX * 2) / 4) - (startX + (staffWidth - startX * 2) / 4)) / 5;
+                int tick = 0 + (16 * i);
                 for(int j = 1; j < 5; j++){
-                    measures.get(i).put(startX + i * (staffWidth - startX * 2) / 4 + j * xPosition, 0);
+                    measures.get(i).put(startX + i * (staffWidth - startX * 2) / 4 + j * xPosition, tick);
+                    tick += 4;
                 }
             }
         }
@@ -159,13 +153,13 @@ public class StaffPanel extends JPanel {
             int staffGap = lineSpacing * 8 + (staffHeight - lineSpacing * 5) / 2;
             
             if(yPosition <= lineSpacing * 2 + (staffHeight - lineSpacing * 5) / 2){
-                note = new Note(xPosition, yPosition, pitch, lineSpacing, false);
+                note = new Note(xPosition, yPosition, pitch, measures.get(index).get(xPosition), noteType, lineSpacing, false);
             }else if(yPosition <= staffGap){
-                note = new Note(xPosition, yPosition, pitch, lineSpacing, true);
+                note = new Note(xPosition, yPosition, pitch, measures.get(index).get(xPosition), noteType, lineSpacing, true);
             }else if(yPosition <= lineSpacing * 2 + (staffHeight - lineSpacing * 5) / 2 + staffGap){
-                note = new Note(xPosition, yPosition, pitch, lineSpacing, false);
+                note = new Note(xPosition, yPosition, pitch, measures.get(index).get(xPosition), noteType, lineSpacing, false);
             }else{
-                note = new Note(xPosition, yPosition, pitch, lineSpacing, true);
+                note = new Note(xPosition, yPosition, pitch, measures.get(index).get(xPosition), noteType, lineSpacing, true);
             }
             System.out.println(pitch);
             System.out.println(yPosition);
@@ -198,5 +192,9 @@ public class StaffPanel extends JPanel {
 
     public List<Note> getNotes(){
         return notes;
+    }
+
+    public void setNoteType(int newNote){
+        noteType = newNote;
     }
 }
