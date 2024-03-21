@@ -29,7 +29,7 @@ public class App extends JFrame {
      * Initializes the User Interface components of the application.
      */
     private void initUI() {
-        setSize(1200, 800);
+        setExtendedState(JFrame.MAXIMIZED_BOTH); 
         setLayout(new BorderLayout());
         setupMenuBar();
         setUpToolBar();
