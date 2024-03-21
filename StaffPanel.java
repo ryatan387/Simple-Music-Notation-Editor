@@ -17,10 +17,10 @@ public class StaffPanel extends JPanel {
     private List<Note> notes;
     private Note selectedNote;
     private int offsetX, offsetY;
-    private TreeMap<Integer, String> treeMap = new TreeMap<>();
+    private TreeMap<Integer, Integer> treeMap = new TreeMap<>();
 
-    private static String[] trebleClefPitches = {"F5", "E5", "D5", "C5", "B4", "A4", "G4", "F4", "E4", "D4", "C4"};
-    private static String[] bassClefPitches = {"A3", "G3", "F3", "E3", "D3", "C3", "B2", "A2", "G2", "F2", "E2"};
+    private static Integer[] trebleClefPitches = {78, 76, 74, 72, 71, 69, 67, 65, 64, 62, 60};
+    private static Integer[] bassClefPitches = {57, 55, 53, 52, 50, 48, 47, 45, 43, 41, 40};
 
     public StaffPanel() {
         //this.staffType = staffType;
@@ -54,7 +54,6 @@ public class StaffPanel extends JPanel {
             g2d.drawLine(startX, currentY, staffWidth - startX, currentY);
             treeMap.put(currentY, trebleClefPitches[treblePosition++]);
             treeMap.put(currentY + (lineSpacing / 2), trebleClefPitches[treblePosition++]);
-
         }
         // Draw bass clef
         g2d.setFont(font);
@@ -89,11 +88,11 @@ public class StaffPanel extends JPanel {
             int staffHeight = getHeight() /2;
             int lineSpacing = staffHeight / 10; // Adjust line spacing as needed for 4 lines
     
-            Map.Entry<Integer, String> low = treeMap.floorEntry(y);
-            Map.Entry<Integer, String> high = treeMap.floorEntry(y);
+            Map.Entry<Integer, Integer> low = treeMap.floorEntry(y);
+            Map.Entry<Integer, Integer> high = treeMap.floorEntry(y);
 
             int yPosition = 0;
-            String pitch = "";
+            int pitch = 0;
             if (low != null && high != null){
                 yPosition = Math.abs(y-low.getKey()) < Math.abs(y-high.getKey())
                 ? low.getKey()
@@ -117,7 +116,8 @@ public class StaffPanel extends JPanel {
             }else{
                 note = new Note(x, yPosition, pitch, lineSpacing, true);
             }
-            System.out.println(pitch);
+            //System.out.println(pitch);
+            System.out.println(yPosition);
             notes.add(note);
     
             // Repaint the panel to reflect the newly added note
@@ -139,5 +139,9 @@ public class StaffPanel extends JPanel {
                 repaint();
             }
         }
+    }
+
+    public List<Note> getNotes(){
+        return notes;
     }
 }

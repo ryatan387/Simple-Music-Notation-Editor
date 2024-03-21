@@ -8,12 +8,12 @@ import java.util.ArrayList;
 public class Note {
     private int x;
     private int y;
-    private String pitch;
+    private int pitch;
     private int size;
     private boolean isStemUp;
     private static final int NOTE_SIZE = 10; // Adjust note size as needed
 
-    public Note(int x, int y, String pitch, int size, boolean isStemUp) {
+    public Note(int x, int y, int pitch, int size, boolean isStemUp) {
         this.x = x;
         this.y = y;
         this.pitch = pitch;
@@ -60,5 +60,13 @@ public class Note {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public int getPitch(){
+        return pitch;
+    }
+
+    public int getDuration(){
+        return 0;
     }
 }
