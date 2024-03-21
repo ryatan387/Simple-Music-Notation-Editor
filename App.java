@@ -123,6 +123,10 @@ public class App extends JFrame {
         // Add a panel for the BPM slider with BorderLayout
         JPanel bpmPanel = new JPanel(new BorderLayout());
         bpmPanel.add(bpmSlider, BorderLayout.CENTER);
+
+        // Create a label for BPM
+        JLabel bpmLabel = new JLabel("BPM");
+        bpmPanel.add(bpmLabel, BorderLayout.EAST);
         
         // Add the BPM panel to the toolbar
         toolBar.add(bpmPanel);
