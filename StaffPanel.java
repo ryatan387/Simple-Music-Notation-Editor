@@ -102,9 +102,7 @@ public class StaffPanel extends JPanel {
             int staffHeight = getHeight() / 2;
             int lineSpacing = staffHeight / 10; // Adjust line spacing as needed for 4 lines
 
-            if(x > 50 && x < 50 + 4 * (getWidth() - 50 * 2) / 4){
-                System.out.println("in measure");
-            }else{
+            if(x < 50 && x > 50 + 4 * (getWidth() - 50 * 2) / 4){
                 return;
             }
 
@@ -161,28 +159,23 @@ public class StaffPanel extends JPanel {
             }else{
                 note = new Note(xPosition, yPosition, pitch, measures.get(index).get(xPosition), noteType, lineSpacing, true);
             }
-            System.out.println(pitch);
-            System.out.println(yPosition);
+
             if(yPosition < (staffHeight - lineSpacing * 5) / 2 + staffGap - (lineSpacing / 2)){
                 if(placedNotesTreble.get(index).get(xPosition) != null){
                     notes.remove(placedNotesTreble.get(index).get(xPosition));
                     placedNotesTreble.get(index).remove(xPosition);
-                    System.out.println("remove");
                 }else{
                     placedNotesTreble.get(index).put(xPosition, note);
                     notes.add(note);
                 }
-                System.out.println("treble");
             }else{
                 if(placedNotesBass.get(index).get(xPosition) != null){
                     notes.remove(placedNotesBass.get(index).get(xPosition));
                     placedNotesBass.get(index).remove(xPosition);
-                    System.out.println("remove");
                 }else{
                     placedNotesBass.get(index).put(xPosition, note);
                     notes.add(note);
                 }
-                System.out.println("bass");
             }
             // Repaint the panel to reflect the newly added note
             repaint();
